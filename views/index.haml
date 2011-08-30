@@ -1,0 +1,42 @@
+.page-header
+  %h1
+    Parley
+    %small
+      Alpha Preview
+
+.row
+  .columns.span6.offset1
+    %img{:src => 'http://f.cl.ly/items/3k1V3H3i2T2R443Q0Q1b/Screen%20Shot%202011-08-22%20at%203.01.34%20PM.png', :width => '100%'}
+  
+  .columns.span6.offset2
+    %h2 Seven Servers
+    %p Parley is client software meant to be used with the seedbox service Seven Servers. Before you configure any further, make sure you have an account.
+
+    %a{:href => 'http://example.com', :class => 'btn success large', :target => '_blank'} Create a Free Account »
+
+.row{:style => 'margin-top:60px'}
+  .columns.span4
+    %h2 Configuration
+    %p Once you submit this form, you won't be able to access this setup page anymore.  To access it again, delete the config.yaml file in parley's directory.
+  .columns.span11.well
+    %form{:action => '/', :method => 'POST'}
+      .clearfix
+        %label{:for => 'directory'} Root Directory
+        .input
+          %input{:type => :text, :name => 'directory'}
+          %span.help-block 
+            Where do you download your files? 
+            Parley will refuse to browse above this directory. 
+            Make sure your webserver can serve files from here.
+      .clearfix
+        %label#optionsCheckboxes Other Options
+        .input
+          %ul.inputs-list
+            %li
+              %label
+                %input{:name => "follow_symlinks", :type => "checkbox", :value => "true"}/
+                %span Follow symlinks? Disable for security.
+
+  
+      .actions
+        %input{:type => :submit, :value => 'Configure', :class => 'btn primary'}

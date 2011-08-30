@@ -1,9 +1,4 @@
 # Parley
-
-> Parley. I invoke the right of parley. According to the Code of the Brethren, set down by the pirates Morgan and Bartholomew, you have to take me to your Captain.
-> - Elizabeth
-
-## Introduction
 Parley is client software for a seedbox interface.  Once installed and run, it will relay the contents of the directory requested by the user through the service interface.
 
 ## Prerequisites

@@ -2,10 +2,22 @@ require 'sinatra'
 require 'pry'
 require 'pathname'
 require 'json'
+require 'yaml'
+require 'haml'
+require 'digest/md5'
 require './filesystem.rb'
 
+configure do
+  Settings = YAML.load_file('config.yaml')
+end
+
 get '/' do
-  'Hello World!'
+  haml :index, :layout => :layout
+end
+
+post '/' do
+  @api_key = Digest::MD5.hexdigest(Time.now.to_s)
+  haml :created
 end
 
 get '/directory' do

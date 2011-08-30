@@ -1,0 +1,14 @@
+!!!
+%html
+  %meta{:charset => "utf-8"}/
+  %head
+    %title Parley
+    %link{:href => '/bootstrap.css', :media => 'all', :rel => 'stylesheet', :type => 'text/css'}
+    :css
+      #main{
+        margin-top: 40px;
+      }
+  
+  %body
+    #main.container
+      = yield
