@@ -42,3 +42,4 @@ User has API Key on service, client has API Key. Make em match.
 * Update service with current IP (Removes static IP requirement)
 * Stream data (Removes web server requirement)
 * Package as a Ruby Gem
+* SSL
