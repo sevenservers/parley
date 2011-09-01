@@ -9,18 +9,19 @@ class Filesystem
     path = Pathname.new(path) if path.instance_of?(String)
     
     #@download_url = Setting.find_by_key('download_url').value
-    @user_path = Pathname.new(user.profile.download_folder)
+    #@user_path = Pathname.new(user.profile.download_folder)
     @relative_path = Pathname.new(path)
-    @path = link_with_self(@user_path + @relative_path)
+    #@path = link_with_self(@user_path + @relative_path)
+    @path = @relative_path
   end
   
-  # Sets the relative path to look at: user.filesystem.subdir('AutoTV/Show').each
+  # Sets the relative path to look at: filesystem.subdir('TV/Show').each
   def subdir(dir)
     dir = Pathname.new(dir) if dir.instance_of? String
-    dir = Pathname.new('.') if dir.to_s =~ /\.\./
+    dir = Pathname.new('.') if dir.to_s =~ /\.\./ or dir.to_s =~ /^\//
     dir = Pathname.new('.') if any_symlinks_in dir
     newdir = @relative_path + dir
-    Filesystem.new @user, newdir.to_s
+    Filesystem.new newdir.to_s
   end
   
   def each
@@ -31,10 +32,20 @@ class Filesystem
       yield f if block_given?
     end
   end
-  def all; each end
+  
+  def all
+    each.map do |f|
+      {
+        :basename => f.basename.to_s,
+        :hashname => Digest::MD5.hexdigest(f.basename.to_s),
+        :mtime => f.mtime,
+        :size => f.size
+      }
+    end
+  end
     
   def recent(limit=9)
-    each[0..limit-1]
+    all[0..limit-1]
   end
   
   def glob

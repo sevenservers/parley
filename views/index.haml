@@ -5,25 +5,25 @@
       Alpha Preview
 
 .row
-  .columns.span6.offset1
+  .columns.span6
     %img{:src => 'http://f.cl.ly/items/3k1V3H3i2T2R443Q0Q1b/Screen%20Shot%202011-08-22%20at%203.01.34%20PM.png', :width => '100%'}
   
-  .columns.span6.offset2
+  .columns.span6
     %h2 Seven Servers
     %p Parley is client software meant to be used with the seedbox service Seven Servers. Before you configure any further, make sure you have an account.
 
     %a{:href => 'http://example.com', :class => 'btn success large', :target => '_blank'} Create a Free Account »
 
 .row{:style => 'margin-top:60px'}
-  .columns.span4
+  .columns.span6
     %h2 Configuration
     %p Once you submit this form, you won't be able to access this setup page anymore.  To access it again, delete the config.yaml file in parley's directory.
-  .columns.span11.well
+  .columns.span9.well
     %form{:action => '/', :method => 'POST'}
       .clearfix
         %label{:for => 'directory'} Root Directory
         .input
-          %input{:type => :text, :name => 'directory'}
+          %input{:type => :text, :name => 'directory', :value => @default_dir}
           %span.help-block 
             Where do you download your files? 
             Parley will refuse to browse above this directory. 
@@ -35,7 +35,9 @@
             %li
               %label
                 %input{:name => "follow_symlinks", :type => "checkbox", :value => "true"}/
-                %span Follow symlinks? Disable for security.
+                %span Follow symlinks?
+                %span.help-block
+                  Disable for security. If enabled, parley will be able to escape the root directory and access wherever you symlink to.
 
   
       .actions

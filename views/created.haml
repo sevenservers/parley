@@ -4,26 +4,34 @@
     %small
       Alpha Preview
 
-.alert-message.block-message.error
-  %p
-    %strong Something went wrong:
-    
-  %h4 Params
-  %pre
-    = params
-  .alert-actions
-    %a.btn.small{:href => "/"} Try Again
-    %a.btn.small.primary{:href => "https://github.com/sevenservers/parley/issues", :target => '_blank'} Report Bug
-          
-.row
-  .columns.span8.offset4.well
-    %h2 You're all set!
-    %p Congratulations, you've configured the client software!
-    %p 
-      If you haven't already input your API Key, you should do so now.  
-      Head over to the Seven Servers and click Status.
-      Your API Key is
+- if @error
+  .alert-message.block-message.error
+    %p
+      %strong Something went wrong:
+      == #{@error} #{@error.class}
+    %h4 Params
     %pre
-      = @api_key
+      = params
+      
+    %h4 Settings
+    %pre
+      = Settings
+      
+    %p Make sure you have all dependencies installed, have permission to write files in this folder, and try again.
+    %p Bug reports are also encouraged!
+    .alert-actions
+      %a.btn.small{:href => "/"} Try Again
+      %a.btn.small.primary{:href => "https://github.com/sevenservers/parley/issues", :target => '_blank'} Report Bug
+- else          
+  .row
+    .columns.span8.offset4.well
+      %h2 You're all set!
+      %p Congratulations, you've configured the client software!
+      %p 
+        If you haven't already input your API Key, you should do so now.  
+        Head over to the Seven Servers and click Status.
+        Your API Key is
+      %pre
+        = Settings['api_key']
   
-    %a{:href => 'http://example.com', :class => 'btn primary large', :target => '_blank'} Seven Servers »
+      %a{:href => 'http://example.com', :class => 'btn primary large', :target => '_blank'} Seven Servers »
