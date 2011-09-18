@@ -9,7 +9,9 @@ require './lib.rb'
 require './filesystem.rb'
 
 configure do |c|
-  c.also_reload "*.rb" # Auto reloading for updates
+  # Auto reloading for updates
+  c.also_reload "*.rb"
+  c.also_reload "config.yaml"
   begin
     Settings = YAML.load_file('config.yaml')
     Settings['version'] = '0.0.0'
@@ -101,5 +103,6 @@ end
 
 post '/update' do
   require_api_key
-  `git pull`
+  here = File.expand_path(File.dirname(__FILE__))
+  `cd #{here} && git pull`
 end

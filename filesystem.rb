@@ -53,7 +53,6 @@ class Filesystem
     # Check that it was created
     return nil unless target.file?
 
-    relative = Pathname.new("tmp")
     {
       :basename => target.basename,
       :path => target.relative_path_from(@base_path).dirname.to_s,
