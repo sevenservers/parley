@@ -1,13 +1,15 @@
 require 'sinatra'
+require 'sinatra/reloader'
 require 'pathname'
 require 'json'
 require 'yaml'
 require 'haml'
 require 'digest/md5'
-require './filesystem.rb'
 require './lib.rb'
+require './filesystem.rb'
 
-configure do
+configure do |c|
+  c.also_reload "*.rb" # Auto reloading for updates
   begin
     Settings = YAML.load_file('config.yaml')
     Settings['version'] = '0.0.0'
@@ -75,10 +77,17 @@ end
 get '/settings' do
   require_api_key
   content_type :json
-  Settings.delete('api_key')
-  Settings.to_json
+  s = Settings.dup
+  s.delete('api_key')
+  s.to_json
 end
 
 put '/settings' do
+  require_api_key
   
+end
+
+post '/update' do
+  require_api_key
+  `git pull`
 end
