@@ -11,6 +11,7 @@ require './lib.rb'
 configure do
   begin
     Settings = YAML.load_file('config.yaml')
+    Settings['version'] = '0.0.0'
   rescue Errno::ENOENT
     Settings = nil
   end
@@ -28,8 +29,8 @@ post '/' do
   require_fresh_user
   
   Settings = {
-    'api_key' => Digest::MD5.hexdigest(Time.now.to_s),
-    'directory' => params[:directory],
+    'api_key' => Digest::MD5.hexdigest(Time.now.to_s + rand.to_s),
+    'directory' => params[:directory].strip,
     'follow_symlinks' => true
   }
   Settings['follow_symlinks'] = false unless params[:follow_symlinks]
@@ -54,9 +55,17 @@ get '/directory' do
   begin
     @files = Filesystem.new(Settings['directory'])
     @files = @files.subdir(params[:subdir]) if params[:subdir]
-    return @files.all.to_json
-  rescue Exception
-    halt 404
+    @recursive = params[:recursive] || false
+    @how_many = params[:limit]
+    
+    f = @files.all(@recursive)
+    f = f.first(@how_many.to_i) if @how_many
+    
+    {
+      :files => f
+    }.to_json
+  rescue Exception => e
+    custom_error(e.backtrace.join("\n"))
   end
 end
 

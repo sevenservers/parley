@@ -33,14 +33,18 @@ class Filesystem
     end
   end
   
-  def all
+  def all(recursive=false)
     each.map do |f|
-      {
+      hash = {
         :basename => f.basename.to_s,
-        :hashname => Digest::MD5.hexdigest(f.basename.to_s),
+        :hash => Digest::MD5.hexdigest(f.basename.to_s),
         :mtime => f.mtime,
-        :size => f.size
+        :size => f.size,
+        :is_directory => f.directory?
       }
+      
+      hash[:children] = Filesystem.new(f).all(true) if f.directory? and recursive
+      hash
     end
   end
     
