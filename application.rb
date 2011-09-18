@@ -70,8 +70,20 @@ get '/directory' do
   end
 end
 
-get '/archive/*' do
+get '/archive' do
+  require_api_key
+  content_type :json
   
+  @files = Filesystem.new(Settings['directory'])
+  @files = @files.subdir(params[:path])
+  
+  return 500 if @files.path == Pathname.new(Settings['directory'])
+  
+  begin
+    return @files.to_zip.to_json
+  rescue Exception => e
+    custom_error(e.backtrace.join("\n"))
+  end
 end
 
 get '/settings' do

@@ -3,16 +3,13 @@ class Pathname
 end
 
 class Filesystem
-  attr_reader :path, :user, :relative_path, :user_path
+  attr_reader :path, :base_path
     
   def initialize(path = '')
-    path = Pathname.new(path) if path.instance_of?(String)
+    @path = Pathname.new(path) if path.instance_of?(String)
+    @path ||= path
     
-    #@download_url = Setting.find_by_key('download_url').value
-    #@user_path = Pathname.new(user.profile.download_folder)
-    @relative_path = Pathname.new(path)
-    #@path = link_with_self(@user_path + @relative_path)
-    @path = @relative_path
+    @base_path = Pathname.new(Settings['directory'])
   end
   
   # Sets the relative path to look at: filesystem.subdir('TV/Show').each
@@ -20,8 +17,8 @@ class Filesystem
     dir = Pathname.new(dir) if dir.instance_of? String
     dir = Pathname.new('.') if dir.to_s =~ /\.\./ or dir.to_s =~ /^\//
     dir = Pathname.new('.') if any_symlinks_in dir
-    newdir = @relative_path + dir
-    Filesystem.new newdir.to_s
+    newdir = @path + dir
+    Filesystem.new newdir
   end
   
   def each
@@ -47,32 +44,22 @@ class Filesystem
       hash
     end
   end
-    
-  def recent(limit=9)
-    all[0..limit-1]
-  end
   
-  def glob
-    escpath = (@path + Pathname.new('**/*')).to_s.gsub(/(\[|\]|\{|\}|\(|\)|\?|\.)/){ "\\"+$1 }
-    Pathname.glob(escpath).map{|f| f = link_with_self(f)}.sort!{ |a,b| a.basename.to_s.downcase <=> b.basename.to_s.downcase }
-  end
-  
-  def to_zip current_user
-    # Don't let the user zip the home dir
-    return nil if @path == Pathname.new(@user_path)
-    
-    # Current user's path
-    mypath = current_user.profile.download_folder
+  def to_zip    
     # Download to
-    target = Pathname.new(mypath)+'tmp'+"#{@path.basename}.tar"
+    target = @base_path+'tmp'+"#{@path.basename}.tar"
     command = "cd #{@path.parent} && tar -cf #{target.to_s.shellescape} #{@path.basename.to_s.shellescape}"
     `#{command}`
     # Check that it was created
     return nil unless target.file?
-    
-    zipfile = Pathname.new("tmp/#{target.basename.to_s}")
-    zipfile.filesystem = current_user.filesystem
-    zipfile
+
+    relative = Pathname.new("tmp")
+    {
+      :basename => target.basename,
+      :path => target.relative_path_from(@base_path).dirname.to_s,
+      :size => target.size,
+      :mtime => target.mtime
+    }
   end
     
   private
