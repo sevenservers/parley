@@ -5,6 +5,7 @@ require 'json'
 require 'yaml'
 require 'haml'
 require 'digest/md5'
+require 'shellwords'
 require './lib.rb'
 require './filesystem.rb'
 
@@ -68,7 +69,7 @@ get '/directory' do
       :files => f
     }.to_json
   rescue Exception => e
-    custom_error(e.backtrace.join("\n"))
+    forward_error(e)
   end
 end
 
@@ -84,7 +85,7 @@ get '/archive' do
   begin
     return @files.to_zip.to_json
   rescue Exception => e
-    custom_error(e.backtrace.join("\n"))
+    forward_error e
   end
 end
 

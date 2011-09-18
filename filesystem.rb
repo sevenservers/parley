@@ -48,10 +48,10 @@ class Filesystem
   def to_zip    
     # Download to
     target = @base_path+'tmp'+"#{@path.basename}.tar"
-    command = "cd #{@path.parent} && tar -cf #{target.to_s.shellescape} #{@path.basename.to_s.shellescape}"
+    command = "cd #{@path.dirname} && tar -cf #{target.to_s.shellescape} #{@path.basename.to_s.shellescape}"
     `#{command}`
     # Check that it was created
-    return nil unless target.file?
+    raise IOError unless $?.to_i == 0 #exit status
 
     {
       :basename => target.basename,
