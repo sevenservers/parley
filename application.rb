@@ -1,5 +1,4 @@
 require 'sinatra'
-require 'pry'
 require 'pathname'
 require 'json'
 require 'yaml'
