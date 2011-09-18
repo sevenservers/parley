@@ -79,9 +79,7 @@ get '/archive' do
   
   @files = Filesystem.new(Settings['directory'])
   @files = @files.subdir(params[:path])
-  
-  return 500 if @files.path == Pathname.new(Settings['directory'])
-  
+    
   begin
     return @files.to_zip.to_json
   rescue Exception => e

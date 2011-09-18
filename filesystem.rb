@@ -45,13 +45,15 @@ class Filesystem
     end
   end
   
-  def to_zip    
+  def to_zip
+    # Make sure it's not the root dir
+    raise SecurityError.new("SecurityError: Cannot compress the root directory") if @path == @base_path
     # Download to
     target = @base_path+'tmp'+"#{@path.basename}.tar"
     command = "cd #{@path.dirname} && tar -cf #{target.to_s.shellescape} #{@path.basename.to_s.shellescape}"
-    `#{command}`
+    msg = `#{command}`
     # Check that it was created
-    raise IOError unless $?.to_i == 0 #exit status
+    raise IOError.new("IOError: tar exited with error #{msg}") unless $?.to_i == 0 #exit status
 
     {
       :basename => target.basename,
